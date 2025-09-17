@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Cookie 宠物机器人</title>
+
+  <!-- 网站 favicon 和 iOS icon -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: auto;
+      padding: 1rem;
+    }
+    h1 {
+      text-align: center;
+    }
+
+    /* 聊天框整体 */
+    .chat-box {
+      border: 1px solid #ccc;
+      padding: 10px;
+      height: 400px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #fafafa;
+    }
+
+    /* 每条消息容器 */
+    .message {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      max-width: 80%;
+    }
+
+    /* Cookie 消息：头像左，气泡右 */
+    .message.bot {
+      flex-direction: row;
+      justify-content: flex-start;
+    }
+
+    /* 用户消息：头像右，气泡左 */
+    .message.user {
+    flex-direction: row;            /* ✅ 正向排列：气泡在左，头像在右 */
+    justify-content: flex-end;      /* 整行靠右 */
+    align-self: flex-end;           /* 整块贴右侧 */
+    }
+    .message.user .avatar {           /* 头像和气泡之间留点间距，可选 */
+    margin-left: 8px;
+    }
+    .message.user .bubble {
+    text-align: right;              /* 气泡内文字向右，可选 */
+    }
+
+
+    /* 头像统一样式 */
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    /* 气泡 */
+    .bubble {
+      padding: 8px 12px;
+      border-radius: 15px;
+      background-color: #f1f1f1;
+      word-wrap: break-word;
+    }
+
+    /* 区分颜色 */
+    .message.bot .bubble {
+      background-color: #f3ddc4; /* Cookie颜色 */
+      text-align: left;
+    }
+
+    .message.user .bubble {
+      background-color: #eed4d4; /* 用户颜色 */
+      text-align: right;
+    }
+
+    /* 输入区域 */
+    .input-area {
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    input {
+      flex: 1;
+      padding: 0.5rem;
+    }
+
+    button {
+      padding: 0.5rem 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>🐾 Cookie 🐾</h1>
+
+  <!-- 聊天区 -->
+  <div class="chat-box" id="chat"></div>
+
+  <!-- 输入区 -->
+  <div class="input-area">
+    <input id="msg" placeholder="输入消息..." />
+    <button onclick="sendMsg()">发送</button>
+  </div>
+
+  <script>
+    async function sendMsg() {
+      const chat = document.getElementById('chat');
+      const msg = document.getElementById('msg').value;
+      if (!msg) return;
+
+      // 插入用户消息（头像右、气泡左）
+      chat.innerHTML += `
+        <div class="message user">
+          <div class="bubble">${msg}</div>
+          <img class="avatar" src="user.png" alt="User">
+        </div>`;
+      document.getElementById('msg').value = '';
+      chat.scrollTop = chat.scrollHeight;
+
+      try {
+        const res = await fetch('http://localhost:527/chat', {  /* ← 换成你的 Render 后端URL */
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: msg })
+        });
+        const data = await res.json();
+
+        // 插入Cookie回复（头像左、气泡右）
+        chat.innerHTML += `
+          <div class="message bot">
+            <img class="avatar" src="cookie.png" alt="Cookie">
+            <div class="bubble">${data.reply}</div>
+          </div>`;
+        chat.scrollTop = chat.scrollHeight;
+      } catch (e) {
+        chat.innerHTML += `<div class="message bot"><div class="bubble" style="color:red;">[错误] ${e}</div></div>`;
+      }
+    }
+  </script>
+</body>
+</html>
