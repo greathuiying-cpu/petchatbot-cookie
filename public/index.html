@@ -16,9 +16,7 @@
       margin: auto;
       padding: 1rem;
     }
-    h1 {
-      text-align: center;
-    }
+    h1 { text-align: center; }
 
     /* 聊天框整体 */
     .chat-box {
@@ -48,17 +46,12 @@
 
     /* 用户消息：头像右，气泡左 */
     .message.user {
-    flex-direction: row;            /* ✅ 正向排列：气泡在左，头像在右 */
-    justify-content: flex-end;      /* 整行靠右 */
-    align-self: flex-end;           /* 整块贴右侧 */
+      flex-direction: row;           
+      justify-content: flex-end;     
+      align-self: flex-end;          
     }
-    .message.user .avatar {           /* 头像和气泡之间留点间距，可选 */
-    margin-left: 8px;
-    }
-    .message.user .bubble {
-    text-align: right;              /* 气泡内文字向右，可选 */
-    }
-
+    .message.user .avatar { margin-left: 8px; }
+    .message.user .bubble { text-align: right; }
 
     /* 头像统一样式 */
     .avatar {
@@ -78,12 +71,12 @@
 
     /* 区分颜色 */
     .message.bot .bubble {
-      background-color: #f3ddc4; /* Cookie颜色 */
+      background-color: #f3ddc4; 
       text-align: left;
     }
 
     .message.user .bubble {
-      background-color: #eed4d4; /* 用户颜色 */
+      background-color: #eed4d4; 
       text-align: right;
     }
 
@@ -94,14 +87,8 @@
       gap: 0.5rem;
     }
 
-    input {
-      flex: 1;
-      padding: 0.5rem;
-    }
-
-    button {
-      padding: 0.5rem 1rem;
-    }
+    input { flex: 1; padding: 0.5rem; }
+    button { padding: 0.5rem 1rem; }
   </style>
 </head>
 <body>
@@ -117,12 +104,15 @@
   </div>
 
   <script>
+    // ✅ 用 Render 后端地址（注意加 /chat）
+    const BACKEND_URL = 'https://petchatbot-cookie.onrender.com/chat';
+
     async function sendMsg() {
       const chat = document.getElementById('chat');
       const msg = document.getElementById('msg').value;
       if (!msg) return;
 
-      // 插入用户消息（头像右、气泡左）
+      // 插入用户消息
       chat.innerHTML += `
         <div class="message user">
           <div class="bubble">${msg}</div>
@@ -132,14 +122,14 @@
       chat.scrollTop = chat.scrollHeight;
 
       try {
-        const res = await fetch('http://localhost:527/chat', {  /* ← 换成你的 Render 后端URL */
+        const res = await fetch(BACKEND_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ message: msg })
         });
         const data = await res.json();
 
-        // 插入Cookie回复（头像左、气泡右）
+        // 插入Cookie回复
         chat.innerHTML += `
           <div class="message bot">
             <img class="avatar" src="cookie.png" alt="Cookie">
