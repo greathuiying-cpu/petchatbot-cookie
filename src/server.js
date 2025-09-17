@@ -83,8 +83,9 @@ app.post('/chat', async (req, res) => {
   }
 });
 
-const PORT = 527;
+const PORT = process.env.PORT || 527;
 app.listen(PORT, () => {
   console.log(`✅ Cookie API 服务器已启动: http://localhost:${PORT}`);
 });
+
 
