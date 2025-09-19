@@ -14,6 +14,7 @@
       max-width: 700px;
       margin: auto;
       padding: 1rem;
+      background: #fffdf8;
     }
     h1 { text-align: center; }
 
@@ -24,17 +25,21 @@
       text-align: center;
     }
 
+    /* 聊天框整体 */
     .chat-box {
-      border: 1px solid #ccc;
+      border: 2px solid #f3ddc4;
       padding: 10px;
       height: 400px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      background: #fafafa;
+      background: #fffaf5;
+      border-radius: 20px; /* 圆角弧形框 */
+      box-shadow: 0 3px 8px rgba(0,0,0,0.05);
     }
 
+    /* 每条消息容器 */
     .message {
       display: flex;
       align-items: flex-end;
@@ -55,20 +60,25 @@
     .message.user .avatar { margin-left: 8px; }
     .message.user .bubble { text-align: right; }
 
+    /* 头像统一样式 */
     .avatar {
       width: 40px;
       height: 40px;
       border-radius: 50%;
       object-fit: cover;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
+    /* 气泡 */
     .bubble {
-      padding: 8px 12px;
-      border-radius: 15px;
+      padding: 10px 14px;
+      border-radius: 20px; /* 圆角弧形气泡 */
       background-color: #f1f1f1;
       word-wrap: break-word;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
 
+    /* 区分颜色 */
     .message.bot .bubble {
       background-color: #f3ddc4; 
       text-align: left;
@@ -79,14 +89,42 @@
       text-align: right;
     }
 
+    /* 输入区域 */
     .input-area {
       margin-top: 1rem;
       display: flex;
       gap: 0.5rem;
+      align-items: center;
     }
 
-    input { flex: 1; padding: 0.5rem; }
-    button { padding: 0.5rem 1rem; }
+    input {
+      flex: 1;
+      padding: 0.6rem 0.8rem;
+      border: 2px solid #f3ddc4;
+      border-radius: 20px; /* 圆角输入框 */
+      outline: none;
+      font-size: 1rem;
+      background: #fffaf5;
+    }
+
+    /* 爪子按钮 */
+    button {
+      background: #f3ddc4;
+      border: none;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background-image: url('paw.png'); /* 这里放你的爪子图标 */
+      background-size: 60%;
+      background-repeat: no-repeat;
+      background-position: center;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: transform 0.1s ease-in-out;
+    }
+    button:hover {
+      transform: scale(1.05);
+    }
   </style>
 </head>
 <body>
@@ -100,7 +138,7 @@
   <!-- 输入区 -->
   <div class="input-area">
     <input id="msg" placeholder="输入消息..." />
-    <button onclick="sendMsg()">发送</button>
+    <button onclick="sendMsg()" title="发送"></button>
   </div>
 
   <script>
