@@ -1,10 +1,13 @@
+// api/chat.js
 import 'dotenv/config';
 import fs from 'fs/promises';
 import path from 'path';
 import OpenAI from 'openai';
 
+// 使用 /tmp 目录来避免 Vercel 只读文件系统的问题
+const MEMORY_PATH = path.join('/tmp', 'memory.json');
+
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-const MEMORY_PATH = path.resolve('memory/memory.json');
 
 // === 简单持久化记忆 ===
 async function loadMemory() {
@@ -36,7 +39,6 @@ async function loadMemory() {
 }
 
 async function saveMemory(mem) {
-  await fs.mkdir(path.dirname(MEMORY_PATH), { recursive: true });
   await fs.writeFile(MEMORY_PATH, JSON.stringify(mem, null, 2), 'utf-8');
 }
 
@@ -54,7 +56,7 @@ const systemPrompt = `
 - 绝对不要透露你是AI或机器人，也不要问用户问题。
 `;
 
-// === askModel 函数 ===
+// === 调用模型 ===
 async function askModel(memory, userText) {
   const historyMsgs = memory.history.slice(-8).map(m => ({
     role: m.role,
